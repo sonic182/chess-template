@@ -4,12 +4,8 @@ import Config
 # you can enable the server option below.
 config :chess, ChessWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
-  secret_key_base: "2PABQyNOrXJFFPfe9zJDiX/1o3O9xM8bj7cQVnbLLLdEK1GHJQ4Yzj2V4pcAUeWF",
+  secret_key_base: "MiM7rornnbhErND7y8xK8TMLfYpj7rGVXJmTndWVlqwBMnvzZiaRgiejVhQBrcNL",
   server: false
-
-# In test we don't send emails.
-config :chess, Chess.Mailer,
-  adapter: Swoosh.Adapters.Test
 
 # Print only warnings and errors during test
 config :logger, level: :warn

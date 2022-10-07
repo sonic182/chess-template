@@ -13,7 +13,7 @@ config :chess, ChessWeb.Endpoint,
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
-  secret_key_base: "qw+GTtunUvCHQbRwg3GF6Z4Dg5ykwioGdRNM1wkLHBdzt84QGjb9ZCQsE1kkY8nK",
+  secret_key_base: "kOH+UNoNTWquIBT0R86yHXSyXhAS7pjl0fxh56rTTgcFoEAChiJ73hhc9lSt+OF/",
   watchers: [
     # Start the esbuild watcher by calling Esbuild.install_and_run(:default, args)
     esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]}
