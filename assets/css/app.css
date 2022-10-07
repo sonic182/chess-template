@@ -119,6 +119,10 @@
   100% { opacity: 0; }
 }
 
+/*
+  Chess CSS
+*/
+
 .board {
   --square-size: 80px;
   box-sizing: content-box;
@@ -188,16 +192,4 @@
 
 .figure.rook {
   background-position-x: -182.5px;
-}
-
-.movement-form {
-  display: flex;
-  flex-flow: row nowrap;
-  margin-top: 1rem;
-}
-
-.movement-form input {
-  flex: 0 0 auto;
-  max-width: 3em;
-  margin-right: .5em;
 }
