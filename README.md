@@ -4,9 +4,9 @@ Project skeleton for the Doofinder Code Challenge 2022 (Chess Game)
 
 ## How to use this template
 
-1. Press the _Use this template_ button to create your own repo.
+1. Press the _Fork_ button at the top-right part of the page to create your own copy.
 
-![imagen](https://user-images.githubusercontent.com/482075/194533040-2778f862-b58a-4c7a-acf8-d78c1b4a5aed.png)
+![imagen](https://user-images.githubusercontent.com/482075/194920831-23fb1e14-83c6-4327-a496-bde225a77561.png)
 
 2. Fill in the details.
 3. Clone your newly created repo.
