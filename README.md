@@ -1,8 +1,12 @@
 # Chess - Doofinder Code Challenge 2022
 
-Project skeleton and rules for the Doofinder Code Challenge 2022.
+- **October 18 and 19, 2022 at the Doofinder offices at 63 Cronos Street**. 
+- Starts the 18th at 12:00 and ends on the 19th at 12:00.
+- The presentation and awards ceremony will be on the 19th at 15:30.
 
-The event will take place on October 18 and 19, 2022 at the Doofinder offices at 63 Cronos Street. It will start on the 18th at 12:00 and end on the 19th at 12:00. The presentation and awards ceremony will be on the 19th at 15:30.
+## Please, read me
+
+**MAKE SURE YOU READ THE ENTIRE DOCUMENT AND PROPERLY UNDERSTAND IT BEFORE START CODING!!!**
 
 ## Challenge Rules
 
