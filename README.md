@@ -1,27 +1,25 @@
 # Chess - Doofinder Code Challenge 2022
 
-Project skeleton for the Doofinder Code Challenge 2022 (Chess Game)
+Project skeleton and rules for the Doofinder Code Challenge 2022.
 
-## How to use this template
-
-1. Press the _Fork_ button at the top-right part of the page to create your own copy.
-
-![imagen](https://user-images.githubusercontent.com/482075/194920831-23fb1e14-83c6-4327-a496-bde225a77561.png)
-
-2. Fill in the details.
-3. Clone your newly created repo.
-4. Make sure you use at least Elixir 1.12 (asdf!).
-5. Install dependencies.
-6. Think.
-7. Code.
+The event will take place on October 18 and 19, 2022 at the Doofinder offices at 63 Cronos Street. It will start on the 18th at 12:00 and end on the 19th at 12:00. The presentation and awards ceremony will be on the 19th at 15:30.
 
 ## Challenge Rules
 
 - Participation in the competition will be individual.
 - It's mandatory that all devs participate except the jury.
 - The jury will be made up of Antonio Gutiérrez, Carlos Escribano, Enrique Martínez and Manuel Dominguez.
-- When the time available to code the application is over, the code will be uploaded to the Github repository that was created from this template. If the application is not finished, what has been done will be uploaded.
+- **When the time available to code the application is over, the code will be pushed to the dev's own fork. If the application is not finished, what has been done will be uploaded.**
 - Each participant will show the application to the member of the jury he's assigned to for evaluation.
+
+## Awards
+
+The prizes will be Amazon gift cards (no more than one prize per project):
+
+- **King Award:** €100
+- **Queen Award:** €50
+- **Bishop Award:** €50
+- **Knight Award:** €50
 
 ## Project requisites
 
@@ -46,3 +44,19 @@ The idea is that two players should be able to play a single game. You can make 
 - Final HTML is provided, you are responsible of generating the HTML based on your project's data models.
 
 ![imagen](https://user-images.githubusercontent.com/482075/194532319-b5dc8969-2737-4546-9f39-d6dc2b3a92b7.png)
+
+## Time to start coding!
+
+1. Press the _Fork_ button at the top-right part of the page to create your own copy.
+
+![imagen](https://user-images.githubusercontent.com/482075/194920831-23fb1e14-83c6-4327-a496-bde225a77561.png)
+
+2. Fill in the details.
+3. Clone your newly created repo.
+4. Make sure you use at least Elixir 1.12 (asdf!).
+5. Install dependencies.
+6. Think.
+7. Code.
+8. Remember to push your code to your fork!!!
+
+**IMPORTANT:** No other dependencies than those listed in `mix.exs` are allowed. Any extra dependency must be approved by the jury.
