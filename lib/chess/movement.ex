@@ -1,6 +1,8 @@
 defmodule Chess.Movement do
   @moduledoc false
 
+  @horse_posibilities [{1, 2}, {1, -2}, {-1, 2}, {-1, -2}, {2, 1}, {-2, 1}, {2, -1}, {-2, -1}]
+
   require Logger
 
   def possible_movements(_player, board, {pos_x, pos_y} = position)
@@ -29,14 +31,31 @@ defmodule Chess.Movement do
   end
 
   def movements(%{type: :rook, color: color}, board, my_position) do
-    line_iter_all(board, my_position, color)
+    get_line_moves(board, my_position, color)
   end
 
   def movements(%{type: :bishop, color: color}, board, my_position) do
-    diagonal_iter_all(board, my_position, color)
+    get_diagonal_moves(board, my_position, color)
   end
 
-  defp line_iter_all(board, {pos_x, pos_y} = my_position, color) do
+  def movements(%{type: :knight, color: color}, board, my_position) do
+    get_knight_moves(board, my_position, color)
+  end
+
+  defp get_knight_moves(board, {pos_x, pos_y}, color) do
+    @horse_posibilities
+    |> Enum.map(fn {x, y} -> {pos_x + x, pos_y + y} end)
+    |> Enum.reject(fn {x, y} -> x > 7 or x < 0 or y > 7 or y < 0 end)
+    |> Enum.filter(fn position ->
+      case movement_action(board, position, color) do
+        :move -> true
+        :eat -> true
+        :blocked -> false
+      end
+    end)
+  end
+
+  defp get_line_moves(board, {pos_x, pos_y} = my_position, color) do
     moves1 = line_iter(board, my_position, color, pos_x..7, :row)
     moves2 = line_iter(board, my_position, color, pos_x..0, :row)
     moves3 = line_iter(board, my_position, color, pos_y..7, :col)
@@ -65,7 +84,7 @@ defmodule Chess.Movement do
     |> Enum.reverse()
   end
 
-  defp diagonal_iter_all(board, my_position, color) do
+  defp get_diagonal_moves(board, my_position, color) do
     moves1 = diagonal_iter(board, my_position, color, :up_right, my_position)
     moves2 = diagonal_iter(board, my_position, color, :up_left, my_position)
     moves3 = diagonal_iter(board, my_position, color, :down_right, my_position)
