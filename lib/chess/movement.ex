@@ -1,6 +1,16 @@
 defmodule Chess.Movement do
   @moduledoc false
 
+  @king_posibilities [
+    {1, 1},
+    {1, -1},
+    {-1, 1},
+    {-1, -1},
+    {1, 0},
+    {-1, 0},
+    {0, 1},
+    {0, -1}
+  ]
   @horse_posibilities [{1, 2}, {1, -2}, {-1, 2}, {-1, -2}, {2, 1}, {-2, 1}, {2, -1}, {-2, -1}]
 
   require Logger
@@ -46,8 +56,20 @@ defmodule Chess.Movement do
     get_line_moves(board, my_position, color) ++ get_diagonal_moves(board, my_position, color)
   end
 
-  defp get_knight_moves(board, {pos_x, pos_y}, color) do
-    @horse_posibilities
+  def movements(%{type: :king, color: color}, board, my_position) do
+    get_king_moves(board, my_position, color)
+  end
+
+  defp get_king_moves(board, my_pos, color) do
+    get_movements_by_posibilities(board, my_pos, color, @king_posibilities)
+  end
+
+  defp get_knight_moves(board, my_pos, color) do
+    get_movements_by_posibilities(board, my_pos, color, @horse_posibilities)
+  end
+
+  defp get_movements_by_posibilities(board, {pos_x, pos_y}, color, posibilities) do
+    posibilities
     |> Enum.map(fn {x, y} -> {pos_x + x, pos_y + y} end)
     |> Enum.reject(fn {x, y} -> x > 7 or x < 0 or y > 7 or y < 0 end)
     |> Enum.filter(fn position ->
