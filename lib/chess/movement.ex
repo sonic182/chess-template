@@ -1,6 +1,8 @@
 defmodule Chess.Movement do
   @moduledoc false
 
+  alias Chess.Dashboard
+
   @king_posibilities [
     {1, 1},
     {1, -1},
@@ -17,49 +19,56 @@ defmodule Chess.Movement do
 
   def possible_movements(_player, board, {pos_x, pos_y} = position)
       when pos_x < 8 and pos_y < 8 and pos_x >= 0 and pos_y >= 0 do
-    piece = get(board, position)
+    piece = Dashboard.get(board, position)
     Logger.debug("pos: #{inspect(position)}, piece: #{inspect(piece)}")
 
     movements(piece, board, position)
   end
 
-  # def check?(player, board) do
-  #   false
-  # end
+  def movements(piece, board, position, verify_check \\ true)
 
-  defp get(board, {pos_x, pos_y}) do
-    board |> Enum.at(pos_x) |> Enum.at(pos_y)
-  end
-
-  def movements(nil, _, position) do
+  def movements(nil, _, position, _verify_check) do
     raise "no piece to move in pos #{inspect(position)}"
   end
 
-  def movements(%{type: :pawn, color: player}, board, my_position) do
-    get_pawn_moves(board, my_position, player)
+  def movements(%{type: :pawn, color: player} = piece, board, piece_pos, verify_check) do
+    board
+    |> get_pawn_moves(piece_pos, player)
+    |> check_verify_and_move_filter(board, piece, piece_pos, verify_check)
   end
 
-  def movements(%{type: :rook, color: player}, board, my_position) do
-    get_line_moves(board, my_position, player)
+  def movements(%{type: :rook, color: player} = piece, board, piece_pos, verify_check) do
+    board
+    |> get_line_moves(piece_pos, player)
+    |> check_verify_and_move_filter(board, piece, piece_pos, verify_check)
   end
 
-  def movements(%{type: :bishop, color: player}, board, my_position) do
-    get_diagonal_moves(board, my_position, player)
+  def movements(%{type: :bishop, color: player} = piece, board, piece_pos, verify_check) do
+    board
+    |> get_diagonal_moves(piece_pos, player)
+    |> check_verify_and_move_filter(board, piece, piece_pos, verify_check)
   end
 
-  def movements(%{type: :knight, color: player}, board, my_position) do
-    get_knight_moves(board, my_position, player)
+  def movements(%{type: :knight, color: player} = piece, board, piece_pos, verify_check) do
+    board
+    |> get_knight_moves(piece_pos, player)
+    |> check_verify_and_move_filter(board, piece, piece_pos, verify_check)
   end
 
-  def movements(%{type: :queen, color: player}, board, my_position) do
-    get_line_moves(board, my_position, player) ++ get_diagonal_moves(board, my_position, player)
+  def movements(%{type: :queen, color: player} = piece, board, piece_pos, verify_check) do
+    moves =
+      get_line_moves(board, piece_pos, player) ++ get_diagonal_moves(board, piece_pos, player)
+
+    check_verify_and_move_filter(moves, board, piece, piece_pos, verify_check)
   end
 
-  def movements(%{type: :king, color: player}, board, my_position) do
-    get_king_moves(board, my_position, player)
+  def movements(%{type: :king, color: player} = piece, board, piece_pos, verify_check) do
+    board
+    |> get_king_moves(piece_pos, player)
+    |> check_verify_and_move_filter(board, piece, piece_pos, verify_check)
   end
 
-  def get_pawn_moves(board, {pos_x, pos_y} = my_position, player) do
+  def get_pawn_moves(board, {pos_x, pos_y}, player) do
     increment = if player == :white, do: -1, else: 1
     normal_move = {pos_x + increment, pos_y}
     possible_eats = [{pos_x + increment, pos_y + 1}, {pos_x + increment, pos_y - 1}]
@@ -100,17 +109,17 @@ defmodule Chess.Movement do
     end)
   end
 
-  defp get_line_moves(board, {pos_x, pos_y} = my_position, player) do
-    moves1 = line_iter(board, my_position, player, pos_x..7, :row)
-    moves2 = line_iter(board, my_position, player, pos_x..0, :row)
-    moves3 = line_iter(board, my_position, player, pos_y..7, :col)
-    moves4 = line_iter(board, my_position, player, pos_y..0, :col)
+  defp get_line_moves(board, {pos_x, pos_y} = piece_pos, player) do
+    moves1 = line_iter(board, piece_pos, player, pos_x..7, :row)
+    moves2 = line_iter(board, piece_pos, player, pos_x..0, :row)
+    moves3 = line_iter(board, piece_pos, player, pos_y..7, :col)
+    moves4 = line_iter(board, piece_pos, player, pos_y..0, :col)
 
     res = moves1 ++ moves2 ++ moves3 ++ moves4
     Enum.sort(res)
   end
 
-  def line_iter(board, {pos_x, pos_y} = my_position, player, range, type_iter) do
+  def line_iter(board, {pos_x, pos_y} = piece_pos, player, range, type_iter) do
     range
     |> Enum.map(fn id ->
       if type_iter == :row do
@@ -119,7 +128,7 @@ defmodule Chess.Movement do
         {pos_x, id}
       end
     end)
-    |> Enum.reject(&Kernel.==(&1, my_position))
+    |> Enum.reject(&Kernel.==(&1, piece_pos))
     |> Enum.reduce_while([], fn position, acc ->
       case movement_action(board, position, player) do
         :move -> {:cont, [position | acc]}
@@ -130,26 +139,26 @@ defmodule Chess.Movement do
     |> Enum.reverse()
   end
 
-  defp get_diagonal_moves(board, my_position, player) do
-    moves1 = diagonal_iter(board, my_position, player, :up_right, my_position)
-    moves2 = diagonal_iter(board, my_position, player, :up_left, my_position)
-    moves3 = diagonal_iter(board, my_position, player, :down_right, my_position)
-    moves4 = diagonal_iter(board, my_position, player, :down_left, my_position)
+  defp get_diagonal_moves(board, piece_pos, player) do
+    moves1 = diagonal_iter(board, piece_pos, player, :up_right, piece_pos)
+    moves2 = diagonal_iter(board, piece_pos, player, :up_left, piece_pos)
+    moves3 = diagonal_iter(board, piece_pos, player, :down_right, piece_pos)
+    moves4 = diagonal_iter(board, piece_pos, player, :down_left, piece_pos)
 
     moves1 ++ moves2 ++ moves3 ++ moves4
   end
 
-  def diagonal_iter(_board, {pos_x, pos_y}, _player, _type, _my_position)
-      when pos_x > 7 or pos_x < 0 or pos_y > 7 or pos_y < 0 do
+  defp diagonal_iter(_board, {pos_x, pos_y}, _player, _type, _piece_pos)
+       when pos_x > 7 or pos_x < 0 or pos_y > 7 or pos_y < 0 do
     []
   end
 
-  def diagonal_iter(board, my_pos, player, type, original_pos) when my_pos == original_pos do
+  defp diagonal_iter(board, my_pos, player, type, original_pos) when my_pos == original_pos do
     new_pos = get_next_pos_diagonal(my_pos, type)
     diagonal_iter(board, new_pos, player, type, original_pos)
   end
 
-  def diagonal_iter(board, my_pos, player, type, original_pos) do
+  defp diagonal_iter(board, my_pos, player, type, original_pos) do
     case movement_action(board, my_pos, player) do
       :move ->
         new_pos = get_next_pos_diagonal(my_pos, type)
@@ -171,7 +180,7 @@ defmodule Chess.Movement do
   defp get_next_pos_diagonal({x, y}, :down_left), do: {x - 1, y - 1}
 
   defp movement_action(board, position, actual_player) do
-    case get(board, position) do
+    case Dashboard.get(board, position) do
       nil -> :move
       %{color: ^actual_player, type: _} -> :blocked
       %{color: _, type: _} -> :eat
@@ -179,4 +188,33 @@ defmodule Chess.Movement do
   end
 
   defp invalid_position?({x, y}), do: x > 7 or x < 0 or y > 7 or y < 0
+
+  defp check_verify_and_move_filter(moves, _board, _piece, _piece_pos, false), do: moves
+
+  defp check_verify_and_move_filter(moves, board, %{color: player} = piece, piece_pos, true) do
+    # Generate scenario after movement, and then, reject any scenario where king can die.
+    moves
+    |> Enum.reject(fn position ->
+      new_board = Dashboard.move(board, piece, position, piece_pos)
+      # current king pos
+      king_pos = Dashboard.get_king_pos(new_board, player)
+
+      king_can_die?(new_board, king_pos, player)
+    end)
+  end
+
+  # for tests ignore if there is no king in the board...
+  defp king_can_die?(_board, nil, _player), do: false
+
+  defp king_can_die?(board, king_pos, player) do
+    other_player = if player == :white, do: :black, else: :white
+
+    board
+    |> Dashboard.get_player_pieces(other_player)
+    |> Enum.any?(fn {piece, pos} ->
+      piece
+      |> movements(board, pos, false)
+      |> Enum.member?(king_pos)
+    end)
+  end
 end

@@ -5,7 +5,7 @@ defmodule Chess.MovementPawnTest do
   alias Chess.Movement
   alias Chess.Piece
 
-  import Chess.TestHelper, only: [null_dashboard: 0, put_in_board: 3]
+  import Chess.TestHelper, only: [null_dashboard: 0]
 
   test "[pawn] retrieve possible_movements default dashboard" do
     piece_pos = {1, 3}
@@ -20,7 +20,7 @@ defmodule Chess.MovementPawnTest do
     board = null_dashboard()
     piece = Piece.new(:pawn)
     position = {3, 3}
-    board = put_in_board(board, piece, position)
+    board = Dashboard.put(board, piece, position)
 
     expected = [{2, 3}]
 
@@ -41,9 +41,9 @@ defmodule Chess.MovementPawnTest do
 
     board =
       null_dashboard()
-      |> put_in_board(piece, position)
-      |> put_in_board(piece2, position2)
-      |> put_in_board(piece3, position3)
+      |> Dashboard.put(piece, position)
+      |> Dashboard.put(piece2, position2)
+      |> Dashboard.put(piece3, position3)
 
     expected = [{2, 2}, {2, 3}, {2, 4}]
 

@@ -5,7 +5,7 @@ defmodule Chess.MovementQueenTest do
   alias Chess.Movement
   alias Chess.Piece
 
-  import Chess.TestHelper, only: [null_dashboard: 0, put_in_board: 3]
+  import Chess.TestHelper, only: [null_dashboard: 0]
 
   test "[queen] retrieve possible_movements default dashboard" do
     piece_pos = {0, 3}
@@ -20,7 +20,7 @@ defmodule Chess.MovementQueenTest do
     board = null_dashboard()
     piece = Piece.new(:queen)
     position = {3, 3}
-    board = put_in_board(board, piece, position)
+    board = Dashboard.put(board, piece, position)
 
     expected = [
       {0, 3},

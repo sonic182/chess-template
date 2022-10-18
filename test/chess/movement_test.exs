@@ -3,7 +3,6 @@ defmodule Chess.MovementTest do
 
   alias Chess.Dashboard
   alias Chess.Movement
-  alias Chess.Piece
 
   test "[pawn] retrieve possible_movements" do
     expected = [{2, 0}]

@@ -5,7 +5,7 @@ defmodule Chess.MovementRookTest do
   alias Chess.Movement
   alias Chess.Piece
 
-  import Chess.TestHelper, only: [null_dashboard: 0, put_in_board: 3]
+  import Chess.TestHelper, only: [null_dashboard: 0]
 
   test "[rook] retrieve possible_movements default dashboard" do
     piece_pos = {0, 0}
@@ -20,7 +20,7 @@ defmodule Chess.MovementRookTest do
     board = null_dashboard()
     piece = Piece.new(:rook)
     position = {3, 3}
-    board = put_in_board(board, piece, position)
+    board = Dashboard.put(board, piece, position)
 
     expected = [
       {0, 3},
@@ -53,8 +53,8 @@ defmodule Chess.MovementRookTest do
 
     board =
       null_dashboard()
-      |> put_in_board(piece, position)
-      |> put_in_board(piece2, position2)
+      |> Dashboard.put(piece, position)
+      |> Dashboard.put(piece2, position2)
 
     expected = [
       {0, 3},
@@ -85,8 +85,8 @@ defmodule Chess.MovementRookTest do
 
     board =
       null_dashboard()
-      |> put_in_board(piece, position)
-      |> put_in_board(piece2, position2)
+      |> Dashboard.put(piece, position)
+      |> Dashboard.put(piece2, position2)
 
     expected = [{0, 7}, {1, 7}, {2, 7}, {3, 7}, {4, 7}, {5, 7}, {6, 7}, {7, 5}, {7, 6}]
 

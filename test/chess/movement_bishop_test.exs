@@ -5,7 +5,7 @@ defmodule Chess.MovementBishopTest do
   alias Chess.Movement
   alias Chess.Piece
 
-  import Chess.TestHelper, only: [null_dashboard: 0, put_in_board: 3]
+  import Chess.TestHelper, only: [null_dashboard: 0]
 
   test "[bishop] retrieve possible_movements default dashboard" do
     piece_pos = {0, 2}
@@ -20,7 +20,7 @@ defmodule Chess.MovementBishopTest do
     board = null_dashboard()
     piece = Piece.new(:bishop)
     position = {3, 3}
-    board = put_in_board(board, piece, position)
+    board = Dashboard.put(board, piece, position)
 
     expected = [
       {4, 4},
@@ -52,8 +52,8 @@ defmodule Chess.MovementBishopTest do
 
     board =
       null_dashboard()
-      |> put_in_board(piece, position)
-      |> put_in_board(piece2, position2)
+      |> Dashboard.put(piece, position)
+      |> Dashboard.put(piece2, position2)
 
     expected = [
       {4, 4},
