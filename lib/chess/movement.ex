@@ -88,6 +88,30 @@ defmodule Chess.Movement do
     |> Enum.sort()
   end
 
+  @doc """
+  Check in given board, if player is in check (his king is being threatened)
+  """
+  def in_check?(board, player) do
+    king_pos = Dashboard.get_king_pos(board, player)
+    king_can_die?(board, king_pos, player)
+  end
+
+  def checkmate?(board, player) do
+    player_in_check? = in_check?(board, player)
+    player_can_move? = can_move?(board, player)
+
+    cond do
+      player_in_check? and not player_can_move? ->
+        true
+
+      not player_in_check? and not player_can_move? ->
+        :drowned
+
+      true ->
+        false
+    end
+  end
+
   defp get_king_moves(board, my_pos, player) do
     get_movements_by_posibilities(board, my_pos, player, @king_posibilities)
   end
@@ -119,7 +143,7 @@ defmodule Chess.Movement do
     Enum.sort(res)
   end
 
-  def line_iter(board, {pos_x, pos_y} = piece_pos, player, range, type_iter) do
+  defp line_iter(board, {pos_x, pos_y} = piece_pos, player, range, type_iter) do
     range
     |> Enum.map(fn id ->
       if type_iter == :row do
@@ -196,10 +220,7 @@ defmodule Chess.Movement do
     moves
     |> Enum.reject(fn position ->
       new_board = Dashboard.move(board, piece, position, piece_pos)
-      # current king pos
-      king_pos = Dashboard.get_king_pos(new_board, player)
-
-      king_can_die?(new_board, king_pos, player)
+      in_check?(new_board, player)
     end)
   end
 
@@ -215,6 +236,14 @@ defmodule Chess.Movement do
       piece
       |> movements(board, pos, false)
       |> Enum.member?(king_pos)
+    end)
+  end
+
+  def can_move?(board, player) do
+    board
+    |> Dashboard.get_player_pieces(player)
+    |> Enum.any?(fn {piece, pos} ->
+      movements(piece, board, pos, false) == []
     end)
   end
 end

@@ -84,4 +84,16 @@ defmodule Chess.MovementCornerCasesTest do
 
     assert expected == Movement.possible_movements(player, board, piece_pos)
   end
+
+  test "is checkmate" do
+    player = :white
+
+    board =
+      null_dashboard()
+      |> Dashboard.put(Piece.new(:king), {7, 7})
+      |> Dashboard.put(Piece.new(:rook, :black), {1, 7})
+      |> Dashboard.put(Piece.new(:rook, :black), {1, 6})
+
+    assert Movement.checkmate?(board, player)
+  end
 end
