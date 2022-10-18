@@ -42,6 +42,10 @@ defmodule Chess.Movement do
     get_knight_moves(board, my_position, color)
   end
 
+  def movements(%{type: :queen, color: color}, board, my_position) do
+    get_line_moves(board, my_position, color) ++ get_diagonal_moves(board, my_position, color)
+  end
+
   defp get_knight_moves(board, {pos_x, pos_y}, color) do
     @horse_posibilities
     |> Enum.map(fn {x, y} -> {pos_x + x, pos_y + y} end)
