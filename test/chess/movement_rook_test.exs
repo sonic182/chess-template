@@ -23,20 +23,20 @@ defmodule Chess.MovementRookTest do
     board = put_in_board(board, piece, position)
 
     expected = [
-      {4, 3},
-      {5, 3},
-      {6, 3},
-      {7, 3},
-      {2, 3},
-      {1, 3},
       {0, 3},
+      {1, 3},
+      {2, 3},
+      {3, 0},
+      {3, 1},
+      {3, 2},
       {3, 4},
       {3, 5},
       {3, 6},
       {3, 7},
-      {3, 2},
-      {3, 1},
-      {3, 0}
+      {4, 3},
+      {5, 3},
+      {6, 3},
+      {7, 3}
     ]
 
     player = :black
@@ -57,18 +57,18 @@ defmodule Chess.MovementRookTest do
       |> put_in_board(piece2, position2)
 
     expected = [
+      {0, 3},
+      {1, 3},
+      {2, 3},
+      {3, 0},
+      {3, 1},
+      {3, 2},
+      {3, 4},
+      {3, 5},
       {4, 3},
       {5, 3},
       {6, 3},
-      {7, 3},
-      {2, 3},
-      {1, 3},
-      {0, 3},
-      {3, 4},
-      {3, 5},
-      {3, 2},
-      {3, 1},
-      {3, 0}
+      {7, 3}
     ]
 
     player = :black
@@ -88,17 +88,7 @@ defmodule Chess.MovementRookTest do
       |> put_in_board(piece, position)
       |> put_in_board(piece2, position2)
 
-    expected = [
-      {6, 7},
-      {5, 7},
-      {4, 7},
-      {3, 7},
-      {2, 7},
-      {1, 7},
-      {0, 7},
-      {7, 6},
-      {7, 5}
-    ]
+    expected = [{0, 7}, {1, 7}, {2, 7}, {3, 7}, {4, 7}, {5, 7}, {6, 7}, {7, 5}, {7, 6}]
 
     player = :black
 

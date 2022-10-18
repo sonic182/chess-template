@@ -24,7 +24,6 @@ defmodule Chess.MovementKingTest do
 
     expected = [{4, 4}, {4, 2}, {2, 4}, {2, 2}, {4, 3}, {2, 3}, {3, 4}, {3, 2}]
 
-
     player = :black
 
     assert expected == Movement.possible_movements(player, board, position)
