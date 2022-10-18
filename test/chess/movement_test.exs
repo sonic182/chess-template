@@ -22,29 +22,88 @@ defmodule Chess.MovementTest do
     assert expected == Movement.possible_movements(player, board, {0, 0})
   end
 
-  test "[rook] retrieve possible_movements" do
+  test "[rook] retrieve possible_movements, rook alone" do
     board = null_dashboard()
     piece = Piece.new(:rook)
     position = {3, 3}
     board = put_in_board(board, piece, position)
 
     expected = [
-      {0, 3},
-      {1, 3},
       {2, 3},
+      {1, 3},
+      {0, 3},
       {4, 3},
       {5, 3},
       {6, 3},
       {7, 3},
-      {8, 3},
-      {3, 0},
-      {3, 1},
       {3, 2},
+      {3, 1},
+      {3, 0},
       {3, 4},
       {3, 5},
       {3, 6},
+      {3, 7}
+    ]
+
+    player = :black
+
+    assert expected == Movement.possible_movements(player, board, position)
+  end
+
+  test "[rook] retrieve possible_movements rock vs pawn " do
+    piece = Piece.new(:rook)
+    position = {3, 3}
+
+    piece2 = Piece.new(:pawn, :black)
+    position2 = {3, 5}
+
+    board =
+      null_dashboard()
+      |> put_in_board(piece, position)
+      |> put_in_board(piece2, position2)
+
+    expected = [
+      {2, 3},
+      {1, 3},
+      {0, 3},
+      {4, 3},
+      {5, 3},
+      {6, 3},
+      {7, 3},
+      {3, 2},
+      {3, 1},
+      {3, 0},
+      {3, 4},
+      {3, 5}
+    ]
+
+    player = :black
+
+    assert expected == Movement.possible_movements(player, board, position)
+  end
+
+  test "[rook] retrieve possible_movements empty board, rook in edge" do
+    piece = Piece.new(:rook)
+    position = {7, 7}
+
+    piece2 = Piece.new(:pawn, :black)
+    position2 = {7, 5}
+
+    board =
+      null_dashboard()
+      |> put_in_board(piece, position)
+      |> put_in_board(piece2, position2)
+
+    expected = [
+      {6, 7},
+      {5, 7},
+      {4, 7},
       {3, 7},
-      {3, 8}
+      {2, 7},
+      {1, 7},
+      {0, 7},
+      {7, 6},
+      {7, 5}
     ]
 
     player = :black
@@ -53,14 +112,17 @@ defmodule Chess.MovementTest do
   end
 
   defp null_dashboard() do
-    for _ <- 0..8 do
-      Enum.map(0..8, fn _ -> nil end)
+    for _ <- 0..7 do
+      Enum.map(0..7, fn _ -> nil end)
     end
   end
 
   defp put_in_board(board, piece, {pos_x, pos_y}) do
-    row = Enum.at(board, pos_x)
-    new_col = List.insert_at(row, pos_y, piece)
-    List.insert_at(board, pos_x, new_col)
+    new_col =
+      board
+      |> Enum.at(pos_x)
+      |> List.replace_at(pos_y, piece)
+
+    List.replace_at(board, pos_x, new_col)
   end
 end

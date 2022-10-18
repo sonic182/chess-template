@@ -19,8 +19,8 @@ defmodule Chess.Movement do
     board |> Enum.at(pos_x) |> Enum.at(pos_y)
   end
 
-  def movements(nil, _, _) do
-    raise "no piece to move"
+  def movements(nil, _, position) do
+    raise "no piece to move in pos #{inspect(position)}"
   end
 
   def movements(%{type: :pawn, color: color}, _board, {pos_x, pos_y}) do
@@ -31,9 +31,11 @@ defmodule Chess.Movement do
   def movements(%{type: :rook, color: color}, board, {pos_x, pos_y}) do
     # increment = if color == :white, do: -1, else: 1
 
+    iteration = Enum.to_list(pos_x..0) ++ Enum.to_list(pos_x..7)
+
     # iter row
     moves =
-      0..8
+      iteration
       |> Enum.reduce_while([], fn iter_x, acc ->
         position = {iter_x, pos_y}
 
@@ -47,7 +49,8 @@ defmodule Chess.Movement do
 
     # iter cols
     moves2 =
-      Enum.reduce_while(0..8, [], fn iter_y, acc ->
+      iteration
+      |> Enum.reduce_while([], fn iter_y, acc ->
         position = {pos_x, iter_y}
 
         if iter_y == pos_y do
@@ -65,6 +68,7 @@ defmodule Chess.Movement do
     case get(board, position) do
       nil -> {:cont, [position | acc]}
       %{color: ^player, type: _} -> {:halt, acc}
+      %{color: _, type: _} -> {:halt, [position | acc]}
     end
   end
 end
