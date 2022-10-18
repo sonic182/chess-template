@@ -28,47 +28,88 @@ defmodule Chess.Movement do
     [{pos_x + increment, pos_y}]
   end
 
-  def movements(%{type: :rook, color: color}, board, {pos_x, pos_y}) do
-    # increment = if color == :white, do: -1, else: 1
-
-    iteration = Enum.to_list(pos_x..0) ++ Enum.to_list(pos_x..7)
-
-    # iter row
-    moves =
-      iteration
-      |> Enum.reduce_while([], fn iter_x, acc ->
-        position = {iter_x, pos_y}
-
-        if iter_x == pos_x do
-          {:cont, acc}
-        else
-          target_movement_check(board, position, color, acc)
-        end
-      end)
-      |> Enum.reverse()
-
-    # iter cols
-    moves2 =
-      iteration
-      |> Enum.reduce_while([], fn iter_y, acc ->
-        position = {pos_x, iter_y}
-
-        if iter_y == pos_y do
-          {:cont, acc}
-        else
-          target_movement_check(board, position, color, acc)
-        end
-      end)
-      |> Enum.reverse()
-
-    moves ++ moves2
+  def movements(%{type: :rook, color: color}, board, my_position) do
+    line_iter_all(board, my_position, color)
   end
 
-  defp target_movement_check(board, position, player, acc) do
+  def movements(%{type: :bishop, color: color}, board, my_position) do
+    diagonal_iter_all(board, my_position, color)
+  end
+
+  defp line_iter_all(board, {pos_x, pos_y} = my_position, color) do
+    moves1 = line_iter(board, my_position, color, pos_x..7, :row)
+    moves2 = line_iter(board, my_position, color, pos_x..0, :row)
+    moves3 = line_iter(board, my_position, color, pos_y..7, :col)
+    moves4 = line_iter(board, my_position, color, pos_y..0, :col)
+
+    moves1 ++ moves2 ++ moves3 ++ moves4
+  end
+
+  def line_iter(board, {pos_x, pos_y} = my_position, color, range, type_iter) do
+    range
+    |> Enum.map(fn id ->
+      if type_iter == :row do
+        {id, pos_y}
+      else
+        {pos_x, id}
+      end
+    end)
+    |> Enum.reject(&Kernel.==(&1, my_position))
+    |> Enum.reduce_while([], fn position, acc ->
+      case movement_action(board, position, color) do
+        :move -> {:cont, [position | acc]}
+        :eat -> {:halt, [position | acc]}
+        :blocked -> {:halt, acc}
+      end
+    end)
+    |> Enum.reverse()
+  end
+
+  defp diagonal_iter_all(board, my_position, color) do
+    moves1 = diagonal_iter(board, my_position, color, :up_right, my_position)
+    moves2 = diagonal_iter(board, my_position, color, :up_left, my_position)
+    moves3 = diagonal_iter(board, my_position, color, :down_right, my_position)
+    moves4 = diagonal_iter(board, my_position, color, :down_left, my_position)
+
+    moves1 ++ moves2 ++ moves3 ++ moves4
+  end
+
+  def diagonal_iter(_board, {pos_x, pos_y}, _color, _type, _my_position)
+      when pos_x > 7 or pos_x < 0 or pos_y > 7 or pos_y < 0 do
+    []
+  end
+
+  def diagonal_iter(board, my_pos, player, type, original_pos) when my_pos == original_pos do
+    new_pos = get_next_pos_diagonal(my_pos, type)
+    diagonal_iter(board, new_pos, player, type, original_pos)
+  end
+
+  def diagonal_iter(board, my_pos, player, type, original_pos) do
+    case movement_action(board, my_pos, player) do
+      :move ->
+        new_pos = get_next_pos_diagonal(my_pos, type)
+        positions = diagonal_iter(board, new_pos, player, type, original_pos)
+
+        [my_pos | positions]
+
+      :eat ->
+        [my_pos]
+
+      :blocked ->
+        []
+    end
+  end
+
+  defp get_next_pos_diagonal({x, y}, :up_right), do: {x + 1, y + 1}
+  defp get_next_pos_diagonal({x, y}, :up_left), do: {x + 1, y - 1}
+  defp get_next_pos_diagonal({x, y}, :down_right), do: {x - 1, y + 1}
+  defp get_next_pos_diagonal({x, y}, :down_left), do: {x - 1, y - 1}
+
+  defp movement_action(board, position, actual_player) do
     case get(board, position) do
-      nil -> {:cont, [position | acc]}
-      %{color: ^player, type: _} -> {:halt, acc}
-      %{color: _, type: _} -> {:halt, [position | acc]}
+      nil -> :move
+      %{color: ^actual_player, type: _} -> :blocked
+      %{color: _, type: _} -> :eat
     end
   end
 end
