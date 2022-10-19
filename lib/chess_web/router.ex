@@ -18,6 +18,11 @@ defmodule ChessWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+    post "/", PageController, :new_game
+
+    live_session :default, session: {ChessWeb.PageController, :get_session_data, []} do
+      live "/game/:uid", GameLive, :index
+    end
   end
 
   # Other scopes may use custom stacks.

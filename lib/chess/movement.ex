@@ -73,18 +73,23 @@ defmodule Chess.Movement do
     normal_move = {pos_x + increment, pos_y}
     possible_eats = [{pos_x + increment, pos_y + 1}, {pos_x + increment, pos_y - 1}]
 
-    resp =
-      if movement_action(board, normal_move, player) == :blocked do
-        []
+    response = get_moves_unless_blocked(board, normal_move, player)
+
+    response =
+      if (player == :white and pos_x == 6) or (player == :black and pos_x == 1) do
+        # possible extra move when starting
+        possible_move = {pos_x + increment * 2, pos_y}
+
+        get_moves_unless_blocked(board, possible_move, player) ++ response
       else
-        [normal_move]
+        response
       end
 
     possible_eats
     |> Enum.filter(fn position ->
       movement_action(board, position, player) == :eat
     end)
-    |> Enum.concat(resp)
+    |> Enum.concat(response)
     |> Enum.sort()
   end
 
@@ -99,9 +104,10 @@ defmodule Chess.Movement do
   def checkmate?(board, player) do
     player_in_check? = in_check?(board, player)
     player_can_move? = can_move?(board, player)
+    move_without_check? = any_move_without_check?(board, player)
 
     cond do
-      player_in_check? and not player_can_move? ->
+      player_in_check? and not move_without_check? ->
         true
 
       not player_in_check? and not player_can_move? ->
@@ -245,5 +251,27 @@ defmodule Chess.Movement do
     |> Enum.any?(fn {piece, pos} ->
       movements(piece, board, pos, false) == []
     end)
+  end
+
+  def any_move_without_check?(board, player) do
+    board
+    |> Dashboard.get_player_pieces(player)
+    |> Enum.any?(fn {piece, piece_pos} ->
+      moves = movements(piece, board, piece_pos, false)
+
+      # check if there is any movement that, after it, we are not in check
+      Enum.any?(moves, fn position ->
+        new_board = Dashboard.move(board, piece, position, piece_pos)
+        not in_check?(new_board, player)
+      end)
+    end)
+  end
+
+  defp get_moves_unless_blocked(board, move, player) do
+    if movement_action(board, move, player) == :blocked do
+      []
+    else
+      [move]
+    end
   end
 end
