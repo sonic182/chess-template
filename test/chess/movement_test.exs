@@ -5,7 +5,7 @@ defmodule Chess.MovementTest do
   alias Chess.Movement
 
   test "[pawn] retrieve possible_movements" do
-    expected = [{2, 0}]
+    expected = [{2, 0}, {3, 0}]
     board = Dashboard.new()
 
     assert expected == Movement.possible_movements(board, {1, 0})

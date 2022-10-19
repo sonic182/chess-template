@@ -9,7 +9,7 @@ defmodule Chess.MovementPawnTest do
 
   test "[pawn] retrieve possible_movements default dashboard" do
     piece_pos = {1, 3}
-    expected = [{2, 3}]
+    expected = [{2, 3}, {3, 3}]
     board = Dashboard.new()
 
     assert expected == Movement.possible_movements(board, piece_pos)
