@@ -10,10 +10,9 @@ defmodule Chess.MovementBishopTest do
   test "[bishop] retrieve possible_movements default dashboard" do
     piece_pos = {0, 2}
     expected = []
-    player = :black
     board = Dashboard.new()
 
-    assert expected == Movement.possible_movements(player, board, piece_pos)
+    assert expected == Movement.possible_movements(board, piece_pos)
   end
 
   test "[bishop] retrieve possible_movements, bishop alone" do
@@ -38,9 +37,7 @@ defmodule Chess.MovementBishopTest do
       {0, 0}
     ]
 
-    player = :black
-
-    assert expected == Movement.possible_movements(player, board, position)
+    assert expected == Movement.possible_movements(board, position)
   end
 
   test "[bishop] retrieve possible_movements rock vs pawn " do
@@ -69,8 +66,6 @@ defmodule Chess.MovementBishopTest do
       {0, 0}
     ]
 
-    player = :black
-
-    assert expected == Movement.possible_movements(player, board, position)
+    assert expected == Movement.possible_movements(board, position)
   end
 end

@@ -10,10 +10,9 @@ defmodule Chess.MovementRookTest do
   test "[rook] retrieve possible_movements default dashboard" do
     piece_pos = {0, 0}
     expected = []
-    player = :black
     board = Dashboard.new()
 
-    assert expected == Movement.possible_movements(player, board, piece_pos)
+    assert expected == Movement.possible_movements(board, piece_pos)
   end
 
   test "[rook] retrieve possible_movements, rook alone" do
@@ -39,9 +38,7 @@ defmodule Chess.MovementRookTest do
       {7, 3}
     ]
 
-    player = :black
-
-    assert expected == Movement.possible_movements(player, board, position)
+    assert expected == Movement.possible_movements(board, position)
   end
 
   test "[rook] retrieve possible_movements rock vs pawn " do
@@ -71,9 +68,7 @@ defmodule Chess.MovementRookTest do
       {7, 3}
     ]
 
-    player = :black
-
-    assert expected == Movement.possible_movements(player, board, position)
+    assert expected == Movement.possible_movements(board, position)
   end
 
   test "[rook] retrieve possible_movements empty board, rook in edge" do
@@ -90,8 +85,6 @@ defmodule Chess.MovementRookTest do
 
     expected = [{0, 7}, {1, 7}, {2, 7}, {3, 7}, {4, 7}, {5, 7}, {6, 7}, {7, 5}, {7, 6}]
 
-    player = :black
-
-    assert expected == Movement.possible_movements(player, board, position)
+    assert expected == Movement.possible_movements(board, position)
   end
 end

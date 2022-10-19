@@ -10,10 +10,9 @@ defmodule Chess.MovementPawnTest do
   test "[pawn] retrieve possible_movements default dashboard" do
     piece_pos = {1, 3}
     expected = [{2, 3}]
-    player = :black
     board = Dashboard.new()
 
-    assert expected == Movement.possible_movements(player, board, piece_pos)
+    assert expected == Movement.possible_movements(board, piece_pos)
   end
 
   test "[pawn] retrieve possible_movements, pawn alone" do
@@ -24,9 +23,7 @@ defmodule Chess.MovementPawnTest do
 
     expected = [{2, 3}]
 
-    player = :black
-
-    assert expected == Movement.possible_movements(player, board, position)
+    assert expected == Movement.possible_movements(board, position)
   end
 
   test "[pawn] retrieve possible_movements, pawn eating" do
@@ -47,8 +44,6 @@ defmodule Chess.MovementPawnTest do
 
     expected = [{2, 2}, {2, 3}, {2, 4}]
 
-    player = :black
-
-    assert expected == Movement.possible_movements(player, board, position)
+    assert expected == Movement.possible_movements(board, position)
   end
 end

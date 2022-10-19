@@ -17,7 +17,7 @@ defmodule Chess.Movement do
 
   require Logger
 
-  def possible_movements(_player, board, {pos_x, pos_y} = position)
+  def possible_movements(board, {pos_x, pos_y} = position)
       when pos_x < 8 and pos_y < 8 and pos_x >= 0 and pos_y >= 0 do
     piece = Dashboard.get(board, position)
     Logger.debug("pos: #{inspect(position)}, piece: #{inspect(piece)}")

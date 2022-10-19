@@ -30,7 +30,6 @@ defmodule Chess.MovementCornerCasesTest do
 
       rook = Piece.new(:rook, :black)
       pawn = Piece.new(:pawn, :black)
-      player = :white
 
       piece_pos = {6, 4}
 
@@ -41,7 +40,7 @@ defmodule Chess.MovementCornerCasesTest do
         |> Dashboard.put(rook, {2, 4})
         |> Dashboard.put(pawn, {1, 5})
 
-      assert expected == Movement.possible_movements(player, board, piece_pos)
+      assert expected == Movement.possible_movements(board, piece_pos)
     end)
   end
 
@@ -50,8 +49,6 @@ defmodule Chess.MovementCornerCasesTest do
     piece = Piece.new(:pawn)
     bishop = Piece.new(:bishop, :black)
     pawn = Piece.new(:pawn, :black)
-    player = :white
-
     piece_pos = {6, 5}
 
     board =
@@ -63,14 +60,13 @@ defmodule Chess.MovementCornerCasesTest do
 
     expected = []
 
-    assert expected == Movement.possible_movements(player, board, piece_pos)
+    assert expected == Movement.possible_movements(board, piece_pos)
   end
 
   test "check restrict movements king" do
     king = Piece.new(:king)
     pawn = Piece.new(:pawn)
     rook = Piece.new(:rook, :black)
-    player = :white
 
     piece_pos = {7, 7}
 
@@ -82,7 +78,7 @@ defmodule Chess.MovementCornerCasesTest do
 
     expected = []
 
-    assert expected == Movement.possible_movements(player, board, piece_pos)
+    assert expected == Movement.possible_movements(board, piece_pos)
   end
 
   test "is checkmate" do

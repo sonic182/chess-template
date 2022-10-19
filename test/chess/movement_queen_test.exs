@@ -10,10 +10,9 @@ defmodule Chess.MovementQueenTest do
   test "[queen] retrieve possible_movements default dashboard" do
     piece_pos = {0, 3}
     expected = []
-    player = :black
     board = Dashboard.new()
 
-    assert expected == Movement.possible_movements(player, board, piece_pos)
+    assert expected == Movement.possible_movements(board, piece_pos)
   end
 
   test "[queen] retrieve possible_movements, queen alone" do
@@ -52,8 +51,6 @@ defmodule Chess.MovementQueenTest do
       {0, 0}
     ]
 
-    player = :black
-
-    assert expected == Movement.possible_movements(player, board, position)
+    assert expected == Movement.possible_movements(board, position)
   end
 end

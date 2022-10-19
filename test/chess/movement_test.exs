@@ -6,9 +6,8 @@ defmodule Chess.MovementTest do
 
   test "[pawn] retrieve possible_movements" do
     expected = [{2, 0}]
-    player = :white
     board = Dashboard.new()
 
-    assert expected == Movement.possible_movements(player, board, {1, 0})
+    assert expected == Movement.possible_movements(board, {1, 0})
   end
 end
