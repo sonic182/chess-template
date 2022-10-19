@@ -29,7 +29,15 @@ defmodule Chess.Game do
   end
 
   def set_board(game_agent, board) do
-    set(game_agent, :board, board)
+    resp = set(game_agent, :board, board)
+
+    subscribers = get(game_agent, :subscribers)
+
+    for pid <- subscribers do
+      send(pid, :new_board)
+    end
+
+    resp
   end
 
   def get_turn_of(game_agent) do
@@ -54,18 +62,32 @@ defmodule Chess.Game do
     end)
   end
 
-  def get_game(game_id) do
-    init_data = %{turn_of: :white, winner: nil, board: Dashboard.new()}
+  def subscribe(agent) do
+    subscribers = get(agent, :subscribers)
+    set(agent, :subscribers, [self() | subscribers])
+  end
 
-    case __MODULE__.start(init_data, name: game_name(game_id)) do
-      {:ok, pid} ->
-        Logger.debug("starting new game #{game_id}")
-        pid
+  def get_game(game_id, user_id) do
+    init_data = %{
+      turn_of: :white,
+      winner: nil,
+      board: Dashboard.new(),
+      subscribers: [],
+      players: %{white: user_id, black: nil}
+    }
 
-      {:error, {:already_started, pid}} ->
-        Logger.debug("reading already started game #{game_id}")
-        pid
-    end
+    agent =
+      case __MODULE__.start(init_data, name: game_name(game_id)) do
+        {:ok, pid} ->
+          Logger.debug("starting new game #{game_id}")
+          pid
+
+        {:error, {:already_started, pid}} ->
+          Logger.debug("reading already started game #{game_id}")
+          pid
+      end
+
+    agent
   end
 
   def game_name(game_id), do: String.to_atom("Game#{game_id}")

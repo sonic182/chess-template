@@ -24,6 +24,15 @@ defmodule ChessWeb.PageController do
     end
   end
 
+  def new_user(conn, %{"uid" => game_id}) do
+    %{cookies: cookies} = fetch_cookies(conn)
+    random_id_player = :rand.uniform(99_999)
+
+    conn
+    |> put_resp_cookie("user", "#{random_id_player}")
+    |> redirect(to: Routes.game_path(conn, :index, game_id))
+  end
+
   def get_session_data(conn) do
     %{cookies: cookies} = fetch_cookies(conn)
     cookies

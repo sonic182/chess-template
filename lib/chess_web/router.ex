@@ -19,6 +19,7 @@ defmodule ChessWeb.Router do
 
     get "/", PageController, :index
     post "/", PageController, :new_game
+    get "/newuser/:uid", PageController, :new_user
 
     live_session :default, session: {ChessWeb.PageController, :get_session_data, []} do
       live "/game/:uid", GameLive, :index
