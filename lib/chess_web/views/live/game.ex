@@ -130,15 +130,12 @@ defmodule ChessWeb.GameLive do
       %{color: ^player} ->
         :focus
 
-      nil ->
+      _whatever ->
         if Enum.member?(moves, clicked_pos) do
           :move
         else
           :none
         end
-
-      _piece_other_player ->
-        :move
     end
   end
 

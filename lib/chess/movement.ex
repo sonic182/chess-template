@@ -73,14 +73,14 @@ defmodule Chess.Movement do
     normal_move = {pos_x + increment, pos_y}
     possible_eats = [{pos_x + increment, pos_y + 1}, {pos_x + increment, pos_y - 1}]
 
-    response = get_moves_unless_blocked(board, normal_move, player)
+    response = get_movement_if_move(board, normal_move, player)
 
     response =
       if (player == :white and pos_x == 6) or (player == :black and pos_x == 1) do
         # possible extra move when starting
         possible_move = {pos_x + increment * 2, pos_y}
 
-        get_moves_unless_blocked(board, possible_move, player) ++ response
+        get_movement_if_move(board, possible_move, player) ++ response
       else
         response
       end
@@ -265,6 +265,14 @@ defmodule Chess.Movement do
         not in_check?(new_board, player)
       end)
     end)
+  end
+
+  defp get_movement_if_move(board, move, player) do
+    if movement_action(board, move, player) == :move do
+      [move]
+    else
+      []
+    end
   end
 
   defp get_moves_unless_blocked(board, move, player) do
