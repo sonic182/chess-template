@@ -31,11 +31,7 @@ defmodule Chess.Game do
   def set_board(game_agent, board) do
     resp = set(game_agent, :board, board)
 
-    subscribers = get(game_agent, :subscribers)
-
-    for pid <- subscribers do
-      send(pid, :new_board)
-    end
+    broadcast(game_agent, :new_board)
 
     resp
   end
@@ -63,12 +59,23 @@ defmodule Chess.Game do
   end
 
   def subscribe(agent) do
-    subscribers = get(agent, :subscribers)
-    set(agent, :subscribers, [self() | subscribers])
+    game_id = get(agent, :game_id)
+    Registry.register(Registry.PubSubChess, game_id, "whatever")
+    # subscribers = get(agent, :subscribers)
+    # set(agent, :subscribers, [self() | subscribers])
+  end
+
+  def broadcast(agent, message) do
+    game_id = get(agent, :game_id)
+
+    Registry.dispatch(Registry.PubSubChess, game_id, fn entries ->
+      for {pid, _} <- entries, do: send(pid, message)
+    end)
   end
 
   def get_game(game_id, user_id) do
     init_data = %{
+      game_id: game_id,
       turn_of: :white,
       winner: nil,
       board: Dashboard.new(),
